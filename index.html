@@ -1,37 +1,163 @@
 <!DOCTYPE html>
-<!-- Coding By CodingNepal - youtube.com/codingnepal -->
-<html lang="en" dir="ltr">
+<html lang="pt-br">
   <head>
-    <meta charset="utf-8">
-    <title>Save Text As File | CodingNepal</title>
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js" defer></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salvar Texto Como Arquivo</title>
+
+    <script>
+      (function () {
+        var temaSalvo = localStorage.getItem("tema");
+        var prefereEscuro = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var deveEscurecer = temaSalvo ? temaSalvo === "escuro" : prefereEscuro;
+        if (deveEscurecer) document.documentElement.classList.add("dark");
+        document.documentElement.classList.add("sem-transicao");
+      })();
+    </script>
+
+    <style>
+      [x-cloak] { display: none !important; }
+
+      html { background-color: #f1f5f9; }
+      html.dark { background-color: #0f172a; }
+
+      html.sem-transicao *,
+      html.sem-transicao *::before,
+      html.sem-transicao *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+    </style>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = { darkMode: "class" };
+    </script>
+
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   </head>
-  <body>
-    <div class="wrapper">
-      <textarea spellcheck="false" placeholder="Enter something to save" required>Lorem Ipsum is simply dummy text of the printing and type setting industry. Lorem Ipsuam has been the industries standard dummy texts ever since this 1500s, when an unknown printer took a galley of type and scrambled it to make a type of dollar specimen book. It have survived not only five centuries, but also from the leap into electronic typesetting.</textarea>
-      <div class="file-options">
-        <div class="option file-name">
-          <label>File name</label>
-          <input type="text" spellcheck="false" placeholder="Enter file name">
-        </div>
-        <div class="option save-as">
-          <label>Save as</label>
-          <div class="select-menu">
-            <select>
-              <option value="text/plain">Text File (.txt)</option>
-              <option value="text/javascript">JS File (.js)</option>
-              <option value="text/html">HTML File (.html)</option>
-              <option value="image/svg+xml">SVG File (.svg)</option>
-              <option value="application/msword">Doc File (.doc)</option>
-              <option value="application/vnd.ms-powerpoint">PPT File (.ppt)</option>
-            </select>
+  <body
+    x-data="salvarTexto()"
+    x-cloak
+    class="min-h-screen bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300"
+  >
+    <button
+      x-cloak
+      x-data="{ escuro: document.documentElement.classList.contains('dark') }"
+      @click="
+        escuro = !escuro;
+        document.documentElement.classList.toggle('dark', escuro);
+        localStorage.setItem('tema', escuro ? 'escuro' : 'claro');
+      "
+      class="fixed bottom-5 right-5 z-20 flex h-12 w-12 items-center justify-center rounded-full border-2 border-slate-300/70 bg-white/70 shadow-lg backdrop-blur-md transition hover:scale-105 dark:border-slate-600/70 dark:bg-slate-800/70"
+      aria-label="Alternar tema claro e escuro"
+    >
+      <svg x-show="!escuro" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+      </svg>
+      <svg x-show="escuro" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+      </svg>
+    </button>
+
+    <main class="mx-auto flex min-h-screen max-w-5xl flex-col justify-center gap-10 px-5 py-10 md:flex-row md:items-center md:gap-14 md:px-8">
+      <section class="md:w-2/5">
+        <span class="inline-flex items-center gap-2 rounded-full border-2 border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 dark:border-indigo-900 dark:bg-indigo-950 dark:text-indigo-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 17v-6M9 12l3-3 3 3" />
+            <path d="M20.5 15.5A6.5 6.5 0 0 0 15 5.5a5 5 0 0 0-9.8 1.4A4.5 4.5 0 0 0 6.5 15.5" />
+          </svg>
+          Sem instalação, sem servidor, na web
+        </span>
+
+        <h1 class="mt-4 text-3xl font-semibold leading-tight md:text-4xl">
+          Salve qualquer texto direto no seu computador
+        </h1>
+        <p class="mt-3 text-slate-600 dark:text-slate-400">
+          Escreva ou cole o conteúdo, escolha o formato do arquivo e baixe tudo em um clique.
+          Nenhum dado sai do seu navegador.
+        </p>
+
+        <ul class="mt-6 hidden flex-wrap gap-2 md:flex">
+          <template x-for="item in formatos" :key="item.mime">
+            <li
+              class="rounded-lg border-2 px-2.5 py-1 text-xs font-medium transition"
+              :class="item.mime === formato
+                ? 'border-indigo-600 bg-indigo-600 text-white'
+                : 'border-slate-300 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'"
+              x-text="'.' + item.extensao"
+            ></li>
+          </template>
+        </ul>
+      </section>
+
+      <section class="md:w-3/5">
+        <div class="rounded-2xl border-2 border-slate-300 bg-white p-5 shadow-xl dark:border-slate-700 dark:bg-slate-800 sm:p-7">
+          <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Conteúdo</label>
+          <textarea
+            x-model="conteudo"
+            spellcheck="false"
+            placeholder="Digite algo para salvar"
+            class="h-56 w-full resize-none rounded-xl border-2 border-slate-300 bg-slate-50 p-3.5 text-[15px] leading-relaxed outline-none transition focus:border-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+          ></textarea>
+
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Nome do arquivo</label>
+              <input
+                x-model="nomeArquivo"
+                type="text"
+                spellcheck="false"
+                placeholder="meu-arquivo"
+                class="h-12 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3.5 text-[15px] outline-none transition focus:border-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+              />
+            </div>
+            <div>
+              <label class="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Salvar como</label>
+              <select
+                x-model="formato"
+                class="h-12 w-full rounded-xl border-2 border-slate-300 bg-slate-50 px-3.5 text-[15px] outline-none transition focus:border-indigo-500 dark:border-slate-600 dark:bg-slate-900"
+              >
+                <template x-for="item in formatos" :key="item.mime">
+                  <option :value="item.mime" x-text="item.rotulo"></option>
+                </template>
+              </select>
+            </div>
           </div>
+
+          <button
+            type="button"
+            @click="salvar()"
+            :disabled="!podeSalvar"
+            :class="podeSalvar
+              ? 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer opacity-100'
+              : 'bg-indigo-600 cursor-not-allowed opacity-50'"
+            class="mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 font-medium text-white shadow-lg transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v12M7 10l5 5 5-5" />
+              <path d="M5 21h14" />
+            </svg>
+            <span x-text="`Salvar como .${formatoAtual.extensao}`"></span>
+          </button>
+
+          <p
+            x-cloak
+            x-show="mostrarAviso"
+            x-transition
+            class="mt-4 flex items-center gap-2 rounded-xl border-2 border-emerald-300 bg-emerald-50 px-3.5 py-2.5 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 6 9 17l-5-5" />
+            </svg>
+            Arquivo salvo com sucesso.
+          </p>
         </div>
-      </div>
-      <button class="save-btn" type="button">Save As Text File</button>
-    </div>
-    
+      </section>
+    </main>
+
+    <script src="js/app.js"></script>
   </body>
 </html>
